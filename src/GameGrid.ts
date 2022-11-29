@@ -58,7 +58,7 @@ export default class GameGrid {
         let word = '';
         for (let i = 0; x + i < BoardSize; i++) {
           const newLetter = this.grid[y][x+i];
-          if (!newLetter) continue;
+          if (!newLetter) break;
 
           word += newLetter;
 
@@ -76,7 +76,7 @@ export default class GameGrid {
         word = '';
         for (let i = 0; y + i < BoardSize; i++) {
           const newLetter = this.grid[y+i][x];
-          if (!newLetter) continue;
+          if (!newLetter) break;
 
           word += newLetter;
 

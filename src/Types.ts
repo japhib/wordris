@@ -12,7 +12,6 @@ export type FoundWord = {
 
 // Given a FoundWord, return a list of all the squares that should be highlighted
 export function foundWordToCoordsList(foundWord: FoundWord): Coords[] {
-  debugger;
   const dx = Math.sign(foundWord.end.x - foundWord.start.x);
   const dy = Math.sign(foundWord.end.y - foundWord.start.y);
 
