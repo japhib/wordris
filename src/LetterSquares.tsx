@@ -1,10 +1,12 @@
 import { ReactNode } from "react";
 import { BoardSize } from "./Constants";
+import GameGrid from "./GameGrid";
 
 export type LetterSquaresProps = {
     keyOffset: number,
     clickable: boolean,
     handlePlaceLetter: (index: number) => void,
+    gameGrid: GameGrid,
 }
 
 // The main playing area that letters are dropped into.
@@ -18,8 +20,12 @@ export default function LetterSquares(props: LetterSquaresProps) {
                 () => props.handlePlaceLetter(x) :
                 () => {};
 
+            const letter = props.gameGrid.grid[y][x];
+
             row.push(
-                <div key={x} className={`wordris-square with-border ${props.clickable ? 'clickable' : ''}`} onClick={handleClick}></div>
+                <div key={x} className={`wordris-square with-border ${props.clickable ? 'clickable' : ''}`} onClick={handleClick}>
+                    {letter}
+                </div>
             )
         }
         squares.push(

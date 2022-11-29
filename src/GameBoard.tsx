@@ -1,13 +1,18 @@
 import { ReactNode, useState } from "react";
 import ClickableLetters from "./ClickableLetters";
 import { BoardSize, letterContents } from "./Constants";
+import useForceUpdate from "./forceUpdate";
+import GameGrid from "./GameGrid";
 import LetterSquares from "./LetterSquares";
 
 enum GameState {
     ChooseLetter = 0
 }
 
+const gameGrid = new GameGrid();
+
 export default function GameBoard() {
+    const forceUpdate = useForceUpdate();
     const [gameState, setGameState] = useState<GameState>(GameState.ChooseLetter);
     const [selectedLetterIdx, setSelectedLetterIdx] = useState<number | null>(null);
 
@@ -24,7 +29,11 @@ export default function GameBoard() {
             return;
         }
 
-        console.log('handlePlaceLetter', index);
+        if (!gameGrid.placeLetter(letterToPlace, index)) {
+            console.log('gameGrid.placeLetter returned false');
+        }
+        setSelectedLetterIdx(null);
+        forceUpdate();
     }
 
     let message: string;
@@ -70,7 +79,7 @@ export default function GameBoard() {
             <div key={1} className="wordris-row arrow-row">
                 {arrows}
             </div>
-            {LetterSquares({keyOffset: 2, clickable: gameBoardClickable, handlePlaceLetter})}
+            {LetterSquares({keyOffset: 2, clickable: gameBoardClickable, handlePlaceLetter, gameGrid})}
 
             <div className="bottom-label">{message}</div>
         </div>
