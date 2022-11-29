@@ -1,63 +1,78 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import ClickableLetters from "./ClickableLetters";
+import { BoardSize, letterContents } from "./Constants";
+import LetterSquares from "./LetterSquares";
 
-const BoardSize = 7;
-const NumLetters = 5;
-
-const letterContents = [
-    'A', 'B', 'C', 'D', 'E'
-]
+enum GameState {
+    ChooseLetter = 0
+}
 
 export default function GameBoard() {
-    const letters: ReactNode[] = [];
-    const numEmptyBoxes = (BoardSize - NumLetters) / 2;
-    for (let x = 0; x < BoardSize; x++) {
-        let borderClass = '';
-        let thisLetterContent = '';
-        if (x >= numEmptyBoxes && x < (BoardSize - numEmptyBoxes)) {
-            borderClass = 'with-border';
-            thisLetterContent = letterContents[x - numEmptyBoxes];
+    const [gameState, setGameState] = useState<GameState>(GameState.ChooseLetter);
+    const [selectedLetterIdx, setSelectedLetterIdx] = useState<number | null>(null);
+
+    const handleLetterClick = (index: number) => {
+        if (gameState === GameState.ChooseLetter) {
+            setSelectedLetterIdx(index);
         }
-        letters.push(
-            <div key={x} className={"wordris-square letter-choice " + borderClass}>
-                {thisLetterContent}
-            </div>
-        )
+    }
+
+    const handlePlaceLetter = (index: number) => {
+        const letterToPlace: string = letterContents[selectedLetterIdx!];
+        if (letterToPlace === undefined) {
+            console.error('letterToPlace undefined, selectedLetterIdx:', selectedLetterIdx);
+            return;
+        }
+
+        console.log('handlePlaceLetter', index);
+    }
+
+    let message: string;
+    let gameBoardClickable = false;
+    switch (gameState) {
+        case GameState.ChooseLetter:
+            if (selectedLetterIdx === null) {
+                message = 'Choose a letter!';
+            } else {
+                message = 'Choose where to place the letter!';
+                gameBoardClickable = true;
+            }
+            break;
+        default:
+            message = '';
+            break;
     }
 
     // empty row!
     const arrows: ReactNode[] = [];
     for (let x = 0; x < BoardSize; x++) {
-        arrows.push(
-            <div key={x} className="wordris-square"></div>
-        )
-    }
+        const handleClick =
+            gameBoardClickable ?
+            () => handlePlaceLetter(x) :
+            () => {};
 
-    const squares: ReactNode[] = [];
-    for (let y = 0; y < BoardSize; y++) {
-        const row: ReactNode[] = [];
-        for (let x = 0; x < BoardSize; x++) {
-            row.push(
-                <div key={x} className="wordris-square with-border"></div>
-            )
-        }
-        squares.push(
-            <div key={y+2} className="wordris-row">
-                {row}
+        arrows.push(
+            <div key={x} className={`wordris-square ${gameBoardClickable ? 'clickable' : ''}`} onClick={handleClick}>
+                {gameBoardClickable ? '⬇️' : ''}
             </div>
-        );
+        )
     }
 
     return (
         <div className="wordris-gameboard">
             <div key={0} className="wordris-row">
-                {letters}
+                {ClickableLetters({
+                    clickable: gameState === GameState.ChooseLetter,
+                    handleClick: handleLetterClick,
+                    selectedIndex: selectedLetterIdx
+                })}
             </div>
-            <div key={1} className="wordris-row">
+            <div key={1} className="wordris-row arrow-row">
                 {arrows}
             </div>
-            {squares}
+            {LetterSquares({keyOffset: 2, clickable: gameBoardClickable, handlePlaceLetter})}
 
-            <div className="bottom-label">Choose a letter!</div>
+            <div className="bottom-label">{message}</div>
         </div>
     )
 }
