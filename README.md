@@ -1,13 +1,13 @@
 # todo
 
-- Get an English dictionary from here: https://github.com/hunspell/hunspell
-    - download it from the en_US.dic part
-    - remove proper nouns (anything starting with a capital letter)
-    - remove anything with dashes
-    - Load it in the game and make a tree data structure that has it organized by letter for very fast lookup
-- Figure out what the Scrabble (or English language?) letter frequency is and make a random generator for the letters
-- Make logic for dropping letters
-- Add a timer - maybe one timer for choosing a letter, one for choosing where to drop it
-- Logic for checking for words, removing them, and incrementing your score
-- Try it on mobile
-- Deploy it somewhere for people (Sal) to try out
+- Timer? If you don't choose a letter in 5 seconds, a random letter will get placed
+- Pause
+<!-- - Letter distribution -- Scrabble letter distribution is kinda whack -->
+- Starting map
+- How to get rid of letters that words don't end in? e.g. the bottom of the board just has V's and Z's. There aren't very many words that end in those letters.
+    - You should be able to make words *up* as well as down
+- More letters to choose from?
+- Bigger board
+
+questionable words:
+- uni
