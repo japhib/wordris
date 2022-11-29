@@ -1,4 +1,6 @@
-import { BoardSize } from "./Constants";
+import { BoardSize, getScore } from "./Constants";
+import { isWord } from "./Dictionary";
+import { FoundWord, foundWordToCoordsList } from "./Types";
 
 export type GridCellContents = string | null;
 
@@ -41,6 +43,77 @@ export default class GameGrid {
         row += contents || ' ';
       }
       console.log(row);
+    }
+  }
+
+  findWords() {
+    const wordsFound: FoundWord[] = [];
+
+    for (let y = 0; y < BoardSize; y++) {
+      for (let x = 0; x < BoardSize; x++) {
+        const startingLetter = this.grid[y][x];
+        if (!startingLetter) continue;
+
+        // go to the right as far as possible
+        let word = '';
+        for (let i = 0; x + i < BoardSize; i++) {
+          const newLetter = this.grid[y][x+i];
+          if (!newLetter) continue;
+
+          word += newLetter;
+
+          if (isWord(word)) {
+            wordsFound.push({
+              start: { x, y },
+              end: { x: x+i, y },
+              score: getScore(word),
+              word
+            });
+          }
+        }
+
+        // go down as far as possible
+        word = '';
+        for (let i = 0; y + i < BoardSize; i++) {
+          const newLetter = this.grid[y+i][x];
+          if (!newLetter) continue;
+
+          word += newLetter;
+
+          if (isWord(word)) {
+            wordsFound.push({
+              start: { x, y },
+              end: { x, y: y+i },
+              score: getScore(word),
+              word
+            });
+          }
+        }
+      }
+    }
+
+    return wordsFound;
+  }
+
+  clearWord(word: FoundWord) {
+    const squares = foundWordToCoordsList(word);
+    for (const sq of squares) {
+      this.grid[sq.y][sq.x] = null;
+    }
+
+    // resolve empty cells by pushing stuff down
+    for (let x = 0; x < BoardSize; x++) {
+      // start at the bottom
+      for (let y = BoardSize - 1; y >= 0; y--) {
+        if (this.grid[y][x] === null) {
+          // shift everything down 1
+          for (let i = y; i > 0; i--) {
+            this.grid[i][x] = this.grid[i-1][x];
+          }
+          // top space must be empty
+          this.grid[0][x] = null;
+        }
+      }
     }
   }
 }

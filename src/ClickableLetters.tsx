@@ -1,10 +1,11 @@
 import { ReactNode } from "react";
-import { BoardSize, letterContents, NumLetters } from "./Constants";
+import { BoardSize, NumLetters, PointsPerLetter } from "./Constants";
 
 export type ClickableLettersProps = {
     clickable: boolean,
     handleClick: (index: number) => void,
     selectedIndex: number | null,
+    letters: string[]
 }
 
 // The letters in boxes at the top that you click to send down into the main area.
@@ -20,7 +21,7 @@ export default function ClickableLetters(props: ClickableLettersProps) {
         let onClick = undefined;
         if (x >= numEmptyBoxes && x < (BoardSize - numEmptyBoxes)) {
             borderClass = 'with-border';
-            thisLetterContent = letterContents[letterIdx];
+            thisLetterContent = props.letters[letterIdx];
             selectedClass = letterIdx === props.selectedIndex ? 'selected' : '';
             onClick = () => props.handleClick(letterIdx);
         }
@@ -31,6 +32,10 @@ export default function ClickableLetters(props: ClickableLettersProps) {
                 onClick={onClick}
             >
                 {thisLetterContent}
+
+                <div className="points">
+                    {PointsPerLetter[thisLetterContent!]}
+                </div>
             </div>
         )
     }

@@ -1,4 +1,4 @@
-$square-size: 2.0em;
+$square-size: 2.5em;
 $background-color: #eee;
 
 :root {
@@ -45,6 +45,10 @@ $title-height: 80px;
     margin-top: .75em;
 }
 
+.wordris-row.choose-letters {
+    margin-top: .75em;
+}
+
 .wordris-square {
     display: inline-block;
     width: $square-size;
@@ -53,23 +57,36 @@ $title-height: 80px;
     vertical-align: middle;
     margin: 2px;
     text-align: center;
+    position: relative;
 
     border: 1px solid $background-color;
     border-radius: 3px;
 
     &.with-border {
         border: 1px solid #888;
+    }
 
-        &.letter-choice {
-            border: 1px solid #888;
+    &.selected {
+        border: 1px solid black;
+        background-color: #555;
+        color: #eee;
+        font-weight: bold;
 
-            &.selected {
-                border: 1px solid black;
-                background-color: #555;
-                color: #eee;
-                font-weight: bold;
-            }
+        .points {
+            font-weight: normal;
+            color: #bbb;
         }
+    }
+
+    .points {
+        position: absolute;
+        bottom: 3px;
+        right: 1px;
+        width: auto;
+        height: auto;
+        line-height: .5em;
+        font-size: smaller;
+        color: #666;
     }
 }
 
