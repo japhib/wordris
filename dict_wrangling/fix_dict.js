@@ -4,6 +4,9 @@ let lines = fs.readFileSync('en_US.dic').toString().split('\n');
 // cut off first line (52890)
 lines = lines.slice(1);
 
+// remove lines WITHOUT any numbers because those are probably all abbreviations
+lines = lines.filter(line => line.match(/[0-9]/))
+
 // remove any lines with capital letters
 const capitalLetterRegex = /[A-Z']/;
 lines = lines.filter(line => !line.match(capitalLetterRegex));
@@ -18,10 +21,13 @@ lines = lines.map(line => {
 // remove words with numbers
 lines = lines.filter(line => !line.match(/[0-9]/))
 
-// remove words 2 letters or less
-lines = lines.filter(line => line.length >= 3);
+// length must be 3-7
+lines = lines.filter(line => line.length >= 3 && line.length <= 7);
 
-console.log(lines);
+// remove duplicates
+const uniq = [...new Set(lines)];
+lines = Array.from(uniq);
+lines.sort();
 
 // write to file
 fs.writeFileSync('../src/dict.txt', lines.join('\n'));
