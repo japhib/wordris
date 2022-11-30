@@ -3,6 +3,11 @@ export type Coords = {
   y: number
 }
 
+export type Bounds = {
+  start: Coords,
+  end: Coords
+}
+
 export type FoundWord = {
   word: string,
   start: Coords,
@@ -31,4 +36,30 @@ export function foundWordToCoordsList(foundWord: FoundWord): Coords[] {
   }
 
   return coordsList;
+}
+
+// function normalizeBounds(bounds: Bounds): Bounds {
+//   const ret = {
+//     start: { x: bounds.start.x, y: bounds.start.y },
+//     end: { x: bounds.end.x, y: bounds.end.y }
+//   }
+
+//   // If X's are opposite, swap them
+//   if (ret.end.x < ret.start.x) {
+//     [ret.start.x, ret.end.x] = [ret.end.x, ret.start.x];
+//   }
+
+//   // If Y's are opposite, swap them
+//   if (ret.end.y < ret.start.y) {
+//     [ret.start.y, ret.end.y] = [ret.end.y, ret.start.y];
+//   }
+
+//   return ret;
+// }
+
+export function foundWordContainsOther(outer: FoundWord, inner: FoundWord): boolean {
+  return inner.start.x <= outer.start.x
+    && inner.end.x >= outer.end.x
+    && inner.start.y <= outer.start.y
+    && inner.end.y >= outer.end.y;
 }

@@ -61,6 +61,9 @@ export default class GameGrid {
         const startingLetter = this.grid[y][x];
         if (!startingLetter) continue;
 
+        // Right/down get extra score bump -- this is a directional bias so it
+        // finds words going right/down before words that go up.
+        //
         // right
         this.checkWords(x, y, 1, 0, wordsFound, .2);
         // down
@@ -97,6 +100,12 @@ export default class GameGrid {
           word
         });
       }
+    }
+  }
+
+  clearWords(words: FoundWord[]) {
+    for (const word of words) {
+      this.clearWord(word);
     }
   }
 

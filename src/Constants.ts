@@ -1,6 +1,9 @@
 export const BoardSize = 7;
 export const NumLetters = 5;
 
+export const SquareSize = '2em';
+export const SquareBorderPlusMargin = '6px';
+
 // copied from https://scrabble.hasbro.com/en-us/faq
 export const LetterFrequency: { [l: string]: number } = Object.freeze({
   A: 9,

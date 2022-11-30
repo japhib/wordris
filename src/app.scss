@@ -39,6 +39,10 @@ $title-height: 80px;
         width: fit-content;
         margin: 1em auto;
     }
+
+    .wordris-letter-area {
+        position: relative;
+    }
 }
 
 .wordris-row.arrow-row {
@@ -88,6 +92,14 @@ $title-height: 80px;
         font-size: smaller;
         color: #666;
     }
+}
+
+div.found-word-circle {
+    border: 1px solid rgb(40, 40, 226);
+    border-radius: 8px;
+    background-color: rgba(40, 40, 226, .2);
+    position: absolute;
+    pointer-events: none;
 }
 
 .clickable {

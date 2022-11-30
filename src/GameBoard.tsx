@@ -1,10 +1,11 @@
 import { ReactNode, useState } from "react";
+import CircleFoundWords from "./CircleFoundWords";
 import ClickableLetters from "./ClickableLetters";
 import { BoardSize, getScore, NumLetters, shuffleLetters } from "./Constants";
 import useForceUpdate from "./forceUpdate";
 import GameGrid from "./GameGrid";
 import LetterSquares from "./LetterSquares";
-import { Coords, FoundWord, foundWordToCoordsList } from "./Types";
+import { Coords, FoundWord, foundWordContainsOther, foundWordToCoordsList } from "./Types";
 
 enum GameState {
     ChooseLetter = 0,
@@ -44,23 +45,33 @@ function fetchLetters(numLetters: number): string[] {
 
 let droppingLetter: DroppingLetter | null = null;
 
-function getHighestScoringWord(words: FoundWord[]): FoundWord {
-    let maxIdx = -1;
-    let maxScore = 0;
-    for (let i = 0; i < words.length; i++) {
-        const word = words[i];
-        if (word.score > maxScore) {
-            maxIdx = i;
+// Removes any words that are contained by other, higher-scoring words.
+function massageFoundWords(words: FoundWord[]): FoundWord[] {
+    const massaged: FoundWord[] = [];
+    words.sort((wordA, wordB) => Math.sign(wordA.score - wordB.score));
+    while (words.length > 0) {
+        // get next highest scoring word
+        const newWord = words.shift()!;
+        // check if it's fully contained by any words already in the result array
+        if (!massaged.some(word => foundWordContainsOther(word, newWord))) {
+            massaged.push(newWord);
         }
     }
-    return words[maxIdx];
+    return massaged;
+}
+
+function sumScore(words: FoundWord[]): number {
+    return words
+        // Floor the score to get rid of the directional bias
+        .map(word => Math.floor(word.score))
+        .reduce((prev, curr) => prev + curr);
 }
 
 export default function GameBoard() {
     const forceUpdate = useForceUpdate();
     const [gameState, setGameState] = useState<GameState>(GameState.ChooseLetter);
     const [selectedLetterIdx, setSelectedLetterIdx] = useState<number | null>(null);
-    const [foundWord, setFoundWord] = useState<FoundWord | null>(null);
+    const [foundWords, setFoundWords] = useState<FoundWord[]>([]);
     const [score, setScore] = useState<number>(0);
     const [letters, setLetters] = useState<string[]>(fetchLetters(NumLetters));
 
@@ -71,20 +82,18 @@ export default function GameBoard() {
     }
 
     const checkForWords = () => {
-        const foundWords = gameGrid.findWords();
+        let foundWords = gameGrid.findWords();
         if (foundWords && foundWords.length > 0) {
-            const foundWord = getHighestScoringWord(foundWords);
-            // Floor the score to get rid of the bias (which makes it prefer right/down over up)
-            foundWord.score = Math.floor(foundWord.score);
+            foundWords = massageFoundWords(foundWords);
 
+            setFoundWords(foundWords);
             setGameState(GameState.FoundWord);
-            setFoundWord(foundWord);
 
             setTimeout(() => {
-                gameGrid.clearWord(foundWord);
-                setScore(score + getScore(foundWord.word));
+                gameGrid.clearWords(foundWords);
+                setScore(score + sumScore(foundWords));
                 setGameState(GameState.ChooseLetter);
-                setFoundWord(null);
+                setFoundWords([]);
                 checkForWords();
             }, 1000);
         }
@@ -144,7 +153,8 @@ export default function GameBoard() {
             break;
 
         case GameState.FoundWord:
-            message = `Found word: ${foundWord!.word}`;
+            const plural = foundWords.length > 1 ? 's' : '';
+            message = `Clearing word${plural}: ${foundWords.map(fw => fw.word).join(', ')}`;
             break;
 
         default:
@@ -174,13 +184,16 @@ export default function GameBoard() {
             <div key={1} className="wordris-row arrow-row">
                 {arrows}
             </div>
-            {LetterSquares({
-                keyOffset: 2,
-                clickable: gameBoardClickable,
-                handlePlaceLetter,
-                gameGrid,
-                highlightedSquares: foundWord ? foundWordToCoordsList(foundWord) : [],
-            })}
+            
+            <div className="wordris-letter-area">
+                {LetterSquares({
+                    keyOffset: 2,
+                    clickable: gameBoardClickable,
+                    handlePlaceLetter,
+                    gameGrid
+                })}
+                {CircleFoundWords({ foundWords })}
+            </div>
 
             <div key={0} className="wordris-row choose-letters">
                 {ClickableLetters({
