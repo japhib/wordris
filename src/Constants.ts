@@ -1,5 +1,6 @@
 export const BoardSize = 7;
 export const NumLetters = 5;
+export const TimerMillis = 3000;
 
 export const SquareSize = '2em';
 export const SquareBorderPlusMargin = '6px';

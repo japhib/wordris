@@ -1,7 +1,7 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import CircleFoundWords from "./CircleFoundWords";
 import ClickableLetters from "./ClickableLetters";
-import { BoardSize, getScore, NumLetters, shuffleLetters } from "./Constants";
+import { BoardSize, getScore, NumLetters, shuffleLetters, TimerMillis } from "./Constants";
 import useForceUpdate from "./forceUpdate";
 import GameGrid from "./GameGrid";
 import LetterSquares from "./LetterSquares";
@@ -59,6 +59,8 @@ export default function GameBoard() {
     const [foundWords, setFoundWords] = useState<FoundWord[]>([]);
     const [score, setScore] = useState<number>(0);
     const [letters, setLetters] = useState<string[]>(fetchLetters(NumLetters));
+    // timeLeft in ms 
+    const [timeLeft, setTimeLeft] = useState<number>(TimerMillis);
 
     const handleLetterClick = (index: number) => {
         if (gameState === GameState.ChooseLetter) {
@@ -76,6 +78,7 @@ export default function GameBoard() {
                 gameGrid.clearWords(foundWords);
                 setScore(score + sumScore(foundWords));
                 setGameState(GameState.ChooseLetter);
+                setTimeLeft(TimerMillis);
                 setFoundWords([]);
                 checkForWords();
             }, 1000);
@@ -96,23 +99,24 @@ export default function GameBoard() {
         }
 
         setGameState(GameState.ChooseLetter);
+        setTimeLeft(TimerMillis);
 
         checkForWords();
         forceUpdate();
     }
 
-    const handlePlaceLetter = (index: number) => {
-        const letterToPlace: string = letters[selectedLetterIdx!];
+    const handlePlaceLetter = (column: number, letterIdx: number) => {
+        const letterToPlace: string = letters[letterIdx];
         if (letterToPlace === undefined) {
-            console.error('letterToPlace undefined, selectedLetterIdx:', selectedLetterIdx);
+            console.error('letterToPlace undefined, letterIdx:', letterIdx);
             return;
         }
 
-        letters[selectedLetterIdx!] = nextLetter();
+        letters[letterIdx] = nextLetter();
         setLetters(letters);
         setSelectedLetterIdx(null);
 
-        const target = gameGrid.getOpenSpaceInColumn(index);
+        const target = gameGrid.getOpenSpaceInColumn(column);
         if (!target) {
             console.log('gameGrid.placeLetter returned false');
             checkForWords();
@@ -122,6 +126,35 @@ export default function GameBoard() {
             letterDropAnimation();
         }
     }
+
+    const handlePlaceSelectedLetter = (column: number) => {
+        handlePlaceLetter(column, selectedLetterIdx!);
+    }
+
+    const dropRandomLetter = () => {
+        const randomLetterIdx = Math.floor(Math.random() * NumLetters);
+        const randomColumn = gameGrid.getRandomNonFullColumn();
+        handlePlaceLetter(randomColumn, randomLetterIdx);
+    }
+
+    const updateTimer = () => {
+        const timerGoing = gameState === GameState.ChooseLetter;
+        if (timerGoing) {
+            let newTimeLeft = timeLeft - 100;
+            if (newTimeLeft <= 0) {
+                newTimeLeft = 0;
+                dropRandomLetter();
+            }
+            setTimeLeft(newTimeLeft);
+        }
+    }
+    // Call updateTimer() every .1 seconds
+    useEffect(() => {
+        const intervalId = setInterval(updateTimer, 100);
+        return () => {
+            clearInterval(intervalId);
+        }
+    })
 
     let message: string;
     let gameBoardClickable = false;
@@ -150,7 +183,7 @@ export default function GameBoard() {
     for (let x = 0; x < BoardSize; x++) {
         const handleClick =
             gameBoardClickable ?
-            () => handlePlaceLetter(x) :
+            () => handlePlaceSelectedLetter(x) :
             () => {};
 
         arrows.push(
@@ -162,7 +195,14 @@ export default function GameBoard() {
 
     return (
         <div className="wordris-gameboard">
-            <div>Score: {score}</div>
+            <div className="score-display">Score: {score}</div>
+
+            <div className="timer-display">
+                Time: {(timeLeft / 1000).toFixed(1)}
+                <div className="timer-fill" style={{
+                    width: (timeLeft / TimerMillis * 100) + '%'
+                }}></div>
+            </div>
 
             <div key={1} className="wordris-row arrow-row">
                 {arrows}
@@ -172,7 +212,7 @@ export default function GameBoard() {
                 {LetterSquares({
                     keyOffset: 2,
                     clickable: gameBoardClickable,
-                    handlePlaceLetter,
+                    handlePlaceLetter: handlePlaceSelectedLetter,
                     gameGrid
                 })}
                 {CircleFoundWords({ foundWords })}

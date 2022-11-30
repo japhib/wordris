@@ -27,6 +27,7 @@ $title-height: 80px;
 }
 
 .wordris-gameboard {
+    position: relative;
     width: fit-content;
     margin: 0px auto;
     margin-top: 3em;
@@ -42,6 +43,24 @@ $title-height: 80px;
 
     .wordris-letter-area {
         position: relative;
+    }
+
+    .score-display {
+        width: fit-content;
+    }
+
+    .timer-display {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+
+        .timer-fill {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            background-color: rgba(40, 40, 226, .2);
+        }
     }
 }
 

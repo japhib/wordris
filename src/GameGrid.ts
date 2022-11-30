@@ -158,4 +158,14 @@ export default class GameGrid {
       }
     }
   }
+
+  getRandomNonFullColumn() {
+    const columns = [];
+    for (let i = 0; i < BoardSize; i++) {
+      // If top cell is empty, column is okay
+      if (!this.grid[0][i])
+        columns.push(i);
+    }
+    return columns[Math.floor(Math.random() * columns.length)];
+  }
 }
