@@ -1,6 +1,6 @@
 import { BoardSize, getScore } from "./Constants";
 import { isWord } from "./Dictionary";
-import { FoundWord, foundWordToCoordsList } from "./Types";
+import { Coords, FoundWord, foundWordToCoordsList } from "./Types";
 
 export type GridCellContents = string | null;
 
@@ -19,19 +19,26 @@ export default class GameGrid {
     }
   }
 
-  placeLetter(letter: string, column: number): boolean {
+  placeLetter(letter: string, column: number): Coords | null {
     // start from the bottom of the column, go up until we find an empty square
     for (let row = BoardSize - 1; row >= 0; row--) {
       const square = this.grid[row][column];
       if (square === null) {
         // It's empty, insert here and break
-        this.grid[row][column] = letter;
-        return true;
+        return { x: column, y: row };
       }
     }
 
     // no empty squares -- couldn't insert it!
-    return false;
+    return null;
+  }
+
+  get(coords: Coords): GridCellContents {
+    return this.grid[coords.y][coords.x];
+  }
+
+  set(coords: Coords, value: GridCellContents) {
+    this.grid[coords.y][coords.x] = value;
   }
 
   print() {

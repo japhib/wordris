@@ -4353,6 +4353,7 @@ dumpy
 dun
 dunce
 dune
+dune
 dung
 dungeon
 dunk
@@ -6801,6 +6802,7 @@ him
 himself
 hind
 hinder
+hine
 hing
 hinge
 hint
@@ -8945,7 +8947,6 @@ mimes
 mimic
 mimicry
 mimosa
-min
 minaret
 mince
 mincer
@@ -9545,9 +9546,9 @@ noddy
 node
 nodule
 noel
-noes
 noggin
 nohow
+noir
 noise
 noisome
 noisy
@@ -9576,6 +9577,7 @@ noon
 noonday
 noose
 nope
+nor 
 norm
 normal
 north
@@ -14628,6 +14630,7 @@ textile
 textual
 texture
 thalami
+than
 thane
 thank
 that

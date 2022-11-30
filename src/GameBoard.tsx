@@ -9,6 +9,13 @@ import { Coords, FoundWord, foundWordToCoordsList } from "./Types";
 enum GameState {
     ChooseLetter = 0,
     FoundWord = 1,
+    DropLetterAnimation = 2,
+}
+
+type DroppingLetter = {
+    letter: string,
+    target: Coords,
+    current: Coords
 }
 
 // Is this weird? That some state is in these objects instead of useState?
@@ -34,6 +41,8 @@ function fetchLetters(numLetters: number): string[] {
     }
     return ret;
 }
+
+let droppingLetter: DroppingLetter | null = null;
 
 export default function GameBoard() {
     const forceUpdate = useForceUpdate();
@@ -68,6 +77,25 @@ export default function GameBoard() {
         }
     }
 
+    const letterDropAnimation = async () => {
+        setGameState(GameState.DropLetterAnimation);
+
+        gameGrid.set(droppingLetter!.current, droppingLetter!.letter);
+        while (droppingLetter!.current.y !== droppingLetter!.target.y && droppingLetter!.current.y < BoardSize) {
+            forceUpdate();
+            await new Promise((resolve, _reject) => setTimeout(resolve, 50));
+
+            gameGrid.set(droppingLetter!.current, null);
+            droppingLetter!.current.y++;
+            gameGrid.set(droppingLetter!.current, droppingLetter!.letter);
+        }
+
+        setGameState(GameState.ChooseLetter);
+
+        checkForWords();
+        forceUpdate();
+    }
+
     const handlePlaceLetter = (index: number) => {
         const letterToPlace: string = letters[selectedLetterIdx!];
         if (letterToPlace === undefined) {
@@ -79,12 +107,15 @@ export default function GameBoard() {
         setLetters(letters);
         setSelectedLetterIdx(null);
 
-        if (!gameGrid.placeLetter(letterToPlace, index)) {
+        const target = gameGrid.placeLetter(letterToPlace, index);
+        if (!target) {
             console.log('gameGrid.placeLetter returned false');
+            checkForWords();
+            forceUpdate();
+        } else {
+            droppingLetter = { letter: letterToPlace, target, current: { x: target.x, y: 0 }};
+            letterDropAnimation();
         }
-
-        checkForWords();
-        forceUpdate();
     }
 
     let message: string;
