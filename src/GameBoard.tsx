@@ -121,7 +121,10 @@ export default function GameBoard() {
 
         letters[letterIdx] = nextLetter();
         setLetters(letters);
-        setSelectedLetterIdx(null);
+        
+        // Only clear selection if the selected one got dropped
+        if (letterIdx === selectedLetterIdx)
+            setSelectedLetterIdx(null);
 
         const target = gameGrid.getOpenSpaceInColumn(column);
         if (!target) {
@@ -167,6 +170,7 @@ export default function GameBoard() {
     let gameBoardClickable = false;
     switch (gameState) {
         case GameState.ChooseLetter:
+        case GameState.DropLetterAnimation:
             if (selectedLetterIdx === null) {
                 message = 'Choose a letter!';
             } else {

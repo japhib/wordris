@@ -30,3 +30,4 @@ Questionable words:
 - pic
 - mun
 - ell
+- poi
