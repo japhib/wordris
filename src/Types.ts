@@ -58,8 +58,8 @@ export function foundWordToCoordsList(foundWord: FoundWord): Coords[] {
 // }
 
 export function foundWordContainsOther(outer: FoundWord, inner: FoundWord): boolean {
-  return inner.start.x <= outer.start.x
-    && inner.end.x >= outer.end.x
-    && inner.start.y <= outer.start.y
-    && inner.end.y >= outer.end.y;
+  return outer.start.x <= inner.start.x
+    && outer.end.x >= inner.end.x
+    && outer.start.y <= inner.start.y
+    && outer.end.y >= inner.end.y;
 }

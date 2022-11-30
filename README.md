@@ -19,3 +19,12 @@ Points:
 - Bonus points for long words
 - Bonus points for multiple words at once
 - Bonus points for clearing the board ... maybe based on how full it was before?
+Marketing:
+- Record replay of highlights (multi-words, etc.) as GIF
+    - gifcap https://github.com/joaomoreno/gifcap
+    - Or: gif.js https://github.com/jnordberg/gif.js/
+
+Missing words:
+- jaguar
+Questionable words:
+- ism

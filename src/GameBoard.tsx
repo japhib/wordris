@@ -45,21 +45,6 @@ function fetchLetters(numLetters: number): string[] {
 
 let droppingLetter: DroppingLetter | null = null;
 
-// Removes any words that are contained by other, higher-scoring words.
-function massageFoundWords(words: FoundWord[]): FoundWord[] {
-    const massaged: FoundWord[] = [];
-    words.sort((wordA, wordB) => Math.sign(wordA.score - wordB.score));
-    while (words.length > 0) {
-        // get next highest scoring word
-        const newWord = words.shift()!;
-        // check if it's fully contained by any words already in the result array
-        if (!massaged.some(word => foundWordContainsOther(word, newWord))) {
-            massaged.push(newWord);
-        }
-    }
-    return massaged;
-}
-
 function sumScore(words: FoundWord[]): number {
     return words
         // Floor the score to get rid of the directional bias
@@ -84,8 +69,6 @@ export default function GameBoard() {
     const checkForWords = () => {
         let foundWords = gameGrid.findWords();
         if (foundWords && foundWords.length > 0) {
-            foundWords = massageFoundWords(foundWords);
-
             setFoundWords(foundWords);
             setGameState(GameState.FoundWord);
 
@@ -129,7 +112,7 @@ export default function GameBoard() {
         setLetters(letters);
         setSelectedLetterIdx(null);
 
-        const target = gameGrid.placeLetter(letterToPlace, index);
+        const target = gameGrid.getOpenSpaceInColumn(index);
         if (!target) {
             console.log('gameGrid.placeLetter returned false');
             checkForWords();

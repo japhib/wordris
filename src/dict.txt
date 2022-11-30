@@ -4769,7 +4769,6 @@ esthete
 estrous
 estrus
 estuary
-eta
 etch
 etcher
 etching
@@ -7424,7 +7423,6 @@ irrupt
 island
 isle
 islet
-ism
 isobar
 isolate
 isomer

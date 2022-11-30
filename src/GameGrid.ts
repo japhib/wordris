@@ -1,6 +1,6 @@
 import { BoardSize, getScore } from "./Constants";
 import { isWord } from "./Dictionary";
-import { Coords, FoundWord, foundWordToCoordsList } from "./Types";
+import { Coords, FoundWord, foundWordContainsOther, foundWordToCoordsList } from "./Types";
 
 export type GridCellContents = string | null;
 
@@ -19,7 +19,17 @@ export default class GameGrid {
     }
   }
 
-  placeLetter(letter: string, column: number): Coords | null {
+  placeLetter(letter: string, column: number): boolean {
+    const space = this.getOpenSpaceInColumn(column);
+    if (space) {
+      this.set(space, letter);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getOpenSpaceInColumn(column: number): Coords | null {
     // start from the bottom of the column, go up until we find an empty square
     for (let row = BoardSize - 1; row >= 0; row--) {
       const square = this.grid[row][column];
@@ -73,6 +83,9 @@ export default class GameGrid {
       }
     }
 
+    if (wordsFound.length > 0)
+      return this.massageFoundWords(wordsFound);
+
     return wordsFound;
   }
 
@@ -101,6 +114,21 @@ export default class GameGrid {
         });
       }
     }
+  }
+
+  // Removes any words that are contained by other, higher-scoring words.
+  private massageFoundWords(words: FoundWord[]): FoundWord[] {
+    const massaged: FoundWord[] = [];
+    words.sort((wordA, wordB) => Math.sign(wordB.score - wordA.score));
+    while (words.length > 0) {
+        // get next highest scoring word
+        const newWord = words.shift()!;
+        // check if it's fully contained by any words already in the result array
+        if (!massaged.some(word => foundWordContainsOther(word, newWord))) {
+            massaged.push(newWord);
+        }
+    }
+    return massaged;
   }
 
   clearWords(words: FoundWord[]) {
