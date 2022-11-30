@@ -1,6 +1,5 @@
 # todo
 
-- timer
 - pause and hide screen
 - leaderboard
 - undo button w/ last timer
@@ -25,6 +24,9 @@ Marketing:
     - Or: gif.js https://github.com/jnordberg/gif.js/
 
 Missing words:
-- jaguar
+- axe
 Questionable words:
 - ism
+- pic
+- mun
+- ell

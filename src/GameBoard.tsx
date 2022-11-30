@@ -89,13 +89,20 @@ export default function GameBoard() {
         setGameState(GameState.DropLetterAnimation);
 
         gameGrid.set(droppingLetter!.current, droppingLetter!.letter);
+        let cycles = 0;
         while (droppingLetter!.current.y !== droppingLetter!.target.y && droppingLetter!.current.y < BoardSize) {
+            cycles++;
             forceUpdate();
             await new Promise((resolve, _reject) => setTimeout(resolve, 50));
 
             gameGrid.set(droppingLetter!.current, null);
             droppingLetter!.current.y++;
             gameGrid.set(droppingLetter!.current, droppingLetter!.letter);
+        }
+        // prevent double drop (race condition)
+        if (cycles === 0) {
+            forceUpdate();
+            await new Promise((resolve, _reject) => setTimeout(resolve, 50));
         }
 
         setGameState(GameState.ChooseLetter);
