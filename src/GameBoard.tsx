@@ -44,6 +44,18 @@ function fetchLetters(numLetters: number): string[] {
 
 let droppingLetter: DroppingLetter | null = null;
 
+function getHighestScoringWord(words: FoundWord[]): FoundWord {
+    let maxIdx = -1;
+    let maxScore = 0;
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        if (word.score > maxScore) {
+            maxIdx = i;
+        }
+    }
+    return words[maxIdx];
+}
+
 export default function GameBoard() {
     const forceUpdate = useForceUpdate();
     const [gameState, setGameState] = useState<GameState>(GameState.ChooseLetter);
@@ -61,8 +73,9 @@ export default function GameBoard() {
     const checkForWords = () => {
         const foundWords = gameGrid.findWords();
         if (foundWords && foundWords.length > 0) {
-            // TODO clear the highest-score word, not just the first one
-            const foundWord = foundWords[0];
+            const foundWord = getHighestScoringWord(foundWords);
+            // Floor the score to get rid of the bias (which makes it prefer right/down over up)
+            foundWord.score = Math.floor(foundWord.score);
 
             setGameState(GameState.FoundWord);
             setFoundWord(foundWord);

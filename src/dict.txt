@@ -8918,7 +8918,6 @@ migrant
 migrate
 mikado
 mike
-mil
 milady
 milch
 mild
@@ -13136,7 +13135,6 @@ sirocco
 sirrah
 sirree
 sirup
-sis
 sisal
 sissy
 sister
@@ -14549,7 +14547,6 @@ teeter
 teeth
 teethe
 tektite
-tel
 telex
 tell
 teller

@@ -61,45 +61,43 @@ export default class GameGrid {
         const startingLetter = this.grid[y][x];
         if (!startingLetter) continue;
 
-        // go to the right as far as possible
-        let word = '';
-        for (let i = 0; x + i < BoardSize; i++) {
-          const newLetter = this.grid[y][x+i];
-          if (!newLetter) break;
-
-          word += newLetter;
-
-          if (isWord(word)) {
-            wordsFound.push({
-              start: { x, y },
-              end: { x: x+i, y },
-              score: getScore(word),
-              word
-            });
-          }
-        }
-
-        // go down as far as possible
-        word = '';
-        for (let i = 0; y + i < BoardSize; i++) {
-          const newLetter = this.grid[y+i][x];
-          if (!newLetter) break;
-
-          word += newLetter;
-
-          if (isWord(word)) {
-            wordsFound.push({
-              start: { x, y },
-              end: { x, y: y+i },
-              score: getScore(word),
-              word
-            });
-          }
-        }
+        // right
+        this.checkWords(x, y, 1, 0, wordsFound, .2);
+        // down
+        this.checkWords(x, y, 0, 1, wordsFound, .1);
+        // up
+        this.checkWords(x, y, 0, -1, wordsFound);
       }
     }
 
     return wordsFound;
+  }
+
+  private checkWords(x: number, y: number, dx: number, dy: number, wordsFound: FoundWord[], scoreBias?: number) {
+    scoreBias = scoreBias || 0;
+
+    let word = '';
+    for (let i = 0;
+      // ensure (x + (i*dx), y + (i*dy)) is always in the board's bounds
+      x + (i*dx) < BoardSize
+        && x + (i*dx) >= 0
+        && y + (i*dy) < BoardSize
+        && y + (i*dy) >= 0; i++) {
+      
+      const newLetter = this.grid[y + (i*dy)][x + (i*dx)];
+      if (!newLetter) break;
+
+      word += newLetter;
+
+      if (isWord(word)) {
+        wordsFound.push({
+          start: { x, y },
+          end: { x: x + (i*dx), y: y + (i*dy) },
+          score: getScore(word) + scoreBias,
+          word
+        });
+      }
+    }
   }
 
   clearWord(word: FoundWord) {
