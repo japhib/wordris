@@ -4042,7 +4042,6 @@ ditty
 ditz
 ditzy
 diurnal
-div
 diva
 divan
 dive
@@ -7520,6 +7519,7 @@ jetport
 jetsam
 jetting
 jetty
+jew
 jewel
 jeweler
 jewelry
@@ -8887,7 +8887,6 @@ mickey
 micro
 microbe
 micron
-mid
 midair
 midday
 midden
@@ -9182,7 +9181,6 @@ mortar
 mortice
 mortify
 mortise
-mos
 mosaic
 mosey
 mosh
@@ -9281,7 +9279,6 @@ mummer
 mummery
 mummify
 mummy
-mun
 munch
 muncher
 mundane
@@ -10494,7 +10491,6 @@ piano
 piaster
 piazza
 pibroch
-pic
 pica
 picador
 piccolo
@@ -12744,7 +12740,6 @@ semi
 seminar
 semipro
 semis
-sen
 senate
 senator
 send
@@ -14684,7 +14679,6 @@ thirty
 this
 thistle
 thither
-tho
 thole
 thong
 thorax
@@ -15630,7 +15624,6 @@ utter
 utterer
 uvula
 uvular
-vac
 vacancy
 vacant
 vacate
