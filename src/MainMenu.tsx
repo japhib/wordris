@@ -11,7 +11,7 @@ export default function MainMenu(props: MainMenuProps) {
 
     return (
         <div className="main-menu">
-            <div className="main-menu-button" onClick={selectZenMode}>Play Zen Mode</div>
+            <div className="main-menu-button" onClick={selectZenMode}>Play Creative Mode</div>
             <div className="main-menu-button" onClick={selectTimeAttack}>Play Time Attack</div>
         </div>
     )

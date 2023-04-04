@@ -289,7 +289,7 @@ export default function GameBoard(props: GameBoardProps) {
 
     return (
         <>
-            <h2 className="game-mode">{props.timerEnabled ? 'Time Attack' : 'Zen Mode'}</h2>
+            <h2 className="game-mode">{props.timerEnabled ? 'Time Attack' : 'Creative Mode'}</h2>
             <div className="wordris-gameboard">
 
                 <div className="score-display">Score: {score}</div>

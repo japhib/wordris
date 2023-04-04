@@ -1,6 +1,5 @@
 # todo
 
-- Choose game mode - zen mode or time attack (basically whether timer exists; separate leaderboards)
 - Another screen accessible from main menu -- how to play (just a brief explainer of the rules)
 
 Backend:
